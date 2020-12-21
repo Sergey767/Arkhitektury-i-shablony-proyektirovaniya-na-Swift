@@ -7,10 +7,22 @@
 
 import UIKit
 
+protocol MainVCDelegate: AnyObject {
+    
+    func loadNextQuestion(createQuestionStrategy: CreateQuestionStrategy, questionMode: QuestionMode)
+}
+
 class MainViewController: UIViewController {
 
     @IBOutlet private weak var resultsButton: UIButton!
     @IBOutlet private weak var resultLabel: UILabel!
+    @IBOutlet private weak var settingsButton: UIButton!
+    @IBOutlet weak var addQuestionButton: UIButton!
+    
+    weak var mainVCDelegate: MainVCDelegate?
+    
+    var createQuestionStrategy: CreateQuestionStrategy?
+    var questionMode: QuestionMode?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -24,6 +36,8 @@ class MainViewController: UIViewController {
                     guard let self = self else { return }
                     self.resultLabel.text = "your last result is: \(result)"
                 }
+                guard let questiomMode = questionMode else { return }
+                destination.questionMode = questiomMode
             }
         default:
             break
@@ -34,3 +48,4 @@ class MainViewController: UIViewController {
         performSegue(withIdentifier: "to_gameVC", sender: self)
     }
 }
+

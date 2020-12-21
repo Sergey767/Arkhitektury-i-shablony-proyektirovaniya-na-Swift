@@ -7,9 +7,11 @@
 
 import UIKit
 
-class GameViewController: UIViewController {
+class GameViewController: UIViewController, MainVCDelegate {
     
     @IBOutlet private weak var questionLabel: UILabel!
+    @IBOutlet weak var percentСorrectQuestionsLabel: UILabel!
+    @IBOutlet weak var currentQuestionsNumberLabel: UILabel!
     
     @IBOutlet private weak var answerA: UIButton!
     @IBOutlet private weak var answerB: UIButton!
@@ -25,16 +27,20 @@ class GameViewController: UIViewController {
         Question(question: "Что норвежцы дарят на Новый год в качестве символа тепла и счастья ?", answers: ["дрова", "свечи", "спички", "пледы"], correctAnswer: 2)
     ]
     
+    //var createQuestionStrategy: CreateQuestionStrategy?
+    
+    var questionMode: QuestionMode = .consistently
+    
     var currentQuestion: Question?
+    
     var currentQuestionPos = 0
     var noCorrect = 0
+    //var randomQuestions = 0
     
     var onGameEnd: ((Int) -> Void)?
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         currentQuestion = questions[0]
         setQuestion()
     }
@@ -56,40 +62,72 @@ class GameViewController: UIViewController {
     }
     
     func checkAnswer(idx: Int) {
-        if(idx == currentQuestion!.correctAnswer) {
+        if(idx == currentQuestion?.correctAnswer) {
             noCorrect += 1
-            loadNextQuestion()
+            loadNextQuestion(createQuestionStrategy: chooseStrategy, questionMode: questionMode)
         } else {
             
-            let gameSession = GameSession(numberResolvedIssues: noCorrect, numberQuestions: questions.count)
+            let percentRight = (Double(noCorrect) / Double(questions.count)) * 100
+
+            let gameSession = GameSession(percentСorrectQuestions: Observable(percentRight), currentQuestionsNumber: Observable(noCorrect), numberResolvedIssues: noCorrect, numberQuestions: questions.count)
             GameSingleton.shared.addGameSession(session: gameSession)
-            
-            var percentRight = Double(noCorrect) / Double(questions.count)
-            percentRight *= 100
-            
+
             GameSingleton.shared.percentRight = percentRight
-            
+
             onGameEnd?(noCorrect)
             self.dismiss(animated: true, completion: nil)
         }
     }
     
-    func loadNextQuestion() {
-        if(currentQuestionPos + 1 < questions.count) {
-            currentQuestionPos += 1
-            currentQuestion = questions[currentQuestionPos]
-            setQuestion()
-        }
+    func loadNextQuestion(createQuestionStrategy: CreateQuestionStrategy, questionMode: QuestionMode) {
+        createQuestionStrategy.questions = questions
+        createQuestionStrategy.currentQuestion = currentQuestion
+        createQuestionStrategy.nextQuestion()
+        setQuestion()
     }
     
     func setQuestion() {
-        questionLabel.text = currentQuestion!.question
+        questionLabel.text = currentQuestion?.question
         questionLabel.lineBreakMode = .byWordWrapping
         questionLabel.numberOfLines = 0
-        answerA.setTitle(currentQuestion!.answers[0], for: .normal)
-        answerB.setTitle(currentQuestion!.answers[1], for: .normal)
-        answerC.setTitle(currentQuestion!.answers[2], for: .normal)
-        answerD.setTitle(currentQuestion!.answers[3], for: .normal)
+        answerA.setTitle(currentQuestion?.answers[0], for: .normal)
+        answerB.setTitle(currentQuestion?.answers[1], for: .normal)
+        answerC.setTitle(currentQuestion?.answers[2], for: .normal)
+        answerD.setTitle(currentQuestion?.answers[3], for: .normal)
+        
+        let percentRight = (Double(noCorrect) / Double(questions.count)) * 100
+        let gameSession = GameSession(percentСorrectQuestions: Observable(percentRight), currentQuestionsNumber: Observable(noCorrect), numberResolvedIssues: noCorrect, numberQuestions: questions.count)
+        
+        percentСorrectQuestionsLabel.lineBreakMode = .byWordWrapping
+        percentСorrectQuestionsLabel.numberOfLines = 0
+        
+        gameSession.percentСorrectQuestions.addObserver(self, options: [.new, .initial], closure: { [weak self] (percentСorrectQuestions, _) in
+            self?.percentСorrectQuestionsLabel.text = "procent \(percentСorrectQuestions) \n"
+        })
+        
+        currentQuestionsNumberLabel.lineBreakMode = .byWordWrapping
+        currentQuestionsNumberLabel.numberOfLines = 0
+        
+        gameSession.currentQuestionsNumber.addObserver(self, options: [.new, .initial], closure: { [weak self] (currentQuestionsNumber, _) in
+            self?.currentQuestionsNumberLabel.text = "current questions \(currentQuestionsNumber)"
+        })
     }
-
+    
+    var chooseStrategy: CreateQuestionStrategy {
+        switch self.questionMode {
+        case .consistently:
+            return СonsecutiveQuestionsStrategy()
+        case .randomly:
+            return RandomQuestionsStrategy()
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        if segue.destination is MainViewController
+        {
+            let vc = segue.destination as? MainViewController
+            vc?.mainVCDelegate = self
+        }
+    }
 }

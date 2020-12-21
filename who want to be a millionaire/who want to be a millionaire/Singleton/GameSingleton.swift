@@ -10,20 +10,27 @@ import Foundation
 class GameSingleton {
     static let shared = GameSingleton()
     
-    //private(set) var gameSession: [GameSession?] = []
     private(set) var gameSession: [GameSession?] {
         didSet {
             gameSessionCaretaker.saveGameSession(sessions: gameSession)
         }
     }
     
-    
     private let gameSessionCaretaker = GameSessionCaretaker()
+    
+    private(set) var questionArr: [Question?] {
+        didSet {
+            questionCaretaker.saveQuestion(questionArr: questionArr)
+        }
+    }
+    
+    private let questionCaretaker = QuestionsCaretaker()
     
     var percentRight: Double?
     
     private init() {
         gameSession = gameSessionCaretaker.loadGameSession() ?? []
+        questionArr = questionCaretaker.loadQuestion() ?? []
     }
     
     func addGameSession(session: GameSession) {
@@ -34,4 +41,13 @@ class GameSingleton {
         gameSession.removeAll()
     }
     
+    func addQuestion(question: Question) {
+        questionArr.append(question)
+    }
+    
+    func clearQuestion() {
+        questionArr.removeAll()
+    }
+    
+    var selectedQuestionMode = 0
 }
