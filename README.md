@@ -1,1 +1,0 @@
-# Arkhitektury-i-shablony-proyektirovaniya-na-Swift
