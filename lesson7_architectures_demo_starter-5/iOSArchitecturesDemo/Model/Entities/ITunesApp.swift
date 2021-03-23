@@ -74,7 +74,7 @@ public struct ITunesApp: Codable {
                   iconUrl: String?,
                   screenshotUrls: [String],
                   version: String?,
-                  currentVersionReleaseDate: String?,
+                  currentVersionReleaseDate: String?,//String?,
                   releaseNotes: String?) {
         self.appName = appName
         self.appUrl = appUrl

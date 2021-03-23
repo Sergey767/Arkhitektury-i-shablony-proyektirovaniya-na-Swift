@@ -18,32 +18,39 @@ final class AppStartManager {
     
     func start() {
         
-        let rootVC = UITabBarController()
-        rootVC.view.backgroundColor = UIColor.varna
-        rootVC.navigationItem.title = "Search via iTunes"
-        rootVC.navigationItem
-        
-        let searchAppsViewController = SearchBuilder.build()
-        let searchSongsViewController = SearchSongBuilder.build()
-        
-        searchAppsViewController.title = "SearchAppsVC"
-        searchSongsViewController.title = "SearchSongsVC"
-        
-        rootVC.viewControllers = [searchAppsViewController, searchSongsViewController]
-        
-        let navVC = self.configuredNavigationController
-        navVC.viewControllers = [rootVC]
-        
+        let navVC = createConfiguredNavigationController()
+        navVC.viewControllers = [createtabbar()]
         window?.rootViewController = navVC
         window?.makeKeyAndVisible()
     }
     
-    private lazy var configuredNavigationController: UINavigationController = {
+    func createConfiguredNavigationController() -> UINavigationController {
         let navVC = UINavigationController()
         navVC.navigationBar.barTintColor = UIColor.varna
         navVC.navigationBar.isTranslucent = false
         navVC.navigationBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         navVC.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         return navVC
-    }()
+    }
+    
+    func createSearchAppsNavigationViewController() -> UINavigationController {
+        let searchAppsViewController = SearchBuilder.build()
+        searchAppsViewController.view.backgroundColor = UIColor.varna
+        searchAppsViewController.title = "Search applications"
+        return UINavigationController(rootViewController: searchAppsViewController)
+    }
+
+    func createSearchSongsNavigationViewController() -> UINavigationController {
+        let searchSongsViewController = SearchSongBuilder.build()
+        searchSongsViewController.view.backgroundColor = UIColor.varna
+        searchSongsViewController.title = "Search Song"
+        return UINavigationController(rootViewController: searchSongsViewController)
+    }
+    
+    func createtabbar() -> UITabBarController {
+        let tabbar = UITabBarController()
+        UITabBar.appearance().tintColor = .varna
+        tabbar.viewControllers = [createSearchAppsNavigationViewController(), createSearchSongsNavigationViewController()]
+        return tabbar
+    }
 }

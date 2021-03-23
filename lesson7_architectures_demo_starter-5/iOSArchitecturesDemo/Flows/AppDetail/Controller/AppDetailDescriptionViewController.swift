@@ -16,6 +16,12 @@ class AppDetailDescriptionViewController: UIViewController {
         return self.view as! AppDetailDescriptionView
     }
     
+//    private let dateFormatter: DateFormatter = {
+//        let df = DateFormatter()
+//        df.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ"
+//        return df
+//    }()
+    
     init(app: ITunesApp) {
         self.app = app
         super.init(nibName: nil, bundle: nil)
@@ -33,14 +39,26 @@ class AppDetailDescriptionViewController: UIViewController {
         super.viewDidLoad()
         
         fillData()
-
     }
+    
+//    func convertDateFormat(inputDate: String) -> String {
+//
+//         let olDateFormatter = DateFormatter()
+//         olDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+//
+//         let oldDate = olDateFormatter.date(from: inputDate)
+//
+//         let convertDateFormatter = DateFormatter()
+//         convertDateFormatter.dateFormat = "MMM dd yyyy h:mm a"
+//
+//         return convertDateFormatter.string(from: oldDate!)
+//    }
     
     private func fillData() {
         appDetailDescriptionView.titleLabel.text = "Что нового"
         appDetailDescriptionView.versionHistoryLabel.text = "История версий"
         appDetailDescriptionView.versionNumberLabel.text = "Версия \(app.version ?? "")"
-        appDetailDescriptionView.dateLabel.text = app.currentVersionReleaseDate
+        appDetailDescriptionView.dateLabel.text = app.currentVersionReleaseDate?.convertDateString()
         appDetailDescriptionView.descriptionLabel.text = app.releaseNotes
     }
 }

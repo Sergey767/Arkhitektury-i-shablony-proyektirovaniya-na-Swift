@@ -33,11 +33,9 @@ final class SongDetailView: UIView {
         self.addImageViewThrobber()
 //        self.setupConstraints()
     }
-
     
     private func addImageViewThrobber() {
         self.throbber.translatesAutoresizingMaskIntoConstraints = false
-
     }
     
     private func setupConstraints() {

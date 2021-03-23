@@ -52,10 +52,9 @@ class AppDetailDescriptionView: UIView {
         return label
     }()
     
-    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+    
         SetUI()
     }
     
@@ -77,7 +76,7 @@ class AppDetailDescriptionView: UIView {
             
             versionHistoryLabel.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 12),
             versionHistoryLabel.leftAnchor.constraint(equalTo: titleLabel.rightAnchor, constant: 30),
-            versionHistoryLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -5),
+            versionHistoryLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: -30),
             
             versionNumberLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 12),
             versionNumberLabel.leftAnchor.constraint(equalTo: titleLabel.leftAnchor),
@@ -92,7 +91,4 @@ class AppDetailDescriptionView: UIView {
             descriptionLabel.rightAnchor.constraint(equalTo: dateLabel.rightAnchor)
         ])
     }
-    
-    
-    
 }

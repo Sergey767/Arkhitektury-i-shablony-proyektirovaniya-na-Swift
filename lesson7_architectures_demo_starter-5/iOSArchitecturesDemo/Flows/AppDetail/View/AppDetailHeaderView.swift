@@ -98,7 +98,4 @@ class AppDetailHeaderView: UIView {
         ])
         
     }
-    
-    
-    
 }

@@ -52,7 +52,6 @@ final class AppDetailViewController: UIViewController {
         
         addChildViewController()
         addDescriptionViewController()
-        
     }
     
     private func addChildViewController() {

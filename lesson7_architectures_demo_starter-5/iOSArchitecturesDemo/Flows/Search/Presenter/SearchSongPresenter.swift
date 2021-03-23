@@ -24,11 +24,24 @@ protocol SearchSongViewOutput: AnyObject {
 
 class SearchSongPresenter {
     private let searchService = ITunesSearchService()
+    let interactor: SearchInteractorInput
+    let router: SearchRouterInput
     
     weak var viewSongInput: (UIViewController & SearchSongViewInput)?
     
-    private func requestSongs(with query: String) {
-        searchService.getSongs(forQuery: query) { [weak self] (result) in
+    init(interactor: SearchInteractorInput, router: SearchRouterInput) {
+        self.interactor = interactor
+        self.router = router
+    }
+    
+    private func openSongDetails(with song: ITunesSong) {
+        router.openDetails(for: song)
+    }
+}
+
+extension SearchSongPresenter: SearchSongViewOutput {
+    func viewDidSearch(with query: String) {
+        interactor.requestSongs(with: query) { [weak self] (result) in
             guard let self = self else { return }
             
             self.viewSongInput?.throbber(show: false)
@@ -43,17 +56,6 @@ class SearchSongPresenter {
                 self.viewSongInput?.showError(error: error)
             }
         }
-    }
-    
-    private func openSongDetails(with song: ITunesSong) {
-        let songDetailViewController = SongDetailViewController(song: song)
-        viewSongInput?.navigationController?.pushViewController(songDetailViewController, animated: true)
-    }
-}
-
-extension SearchSongPresenter: SearchSongViewOutput {
-    func viewDidSearch(with query: String) {
-        requestSongs(with: query)
     }
     
     func viewDidSelectSong(_ song: ITunesSong) {

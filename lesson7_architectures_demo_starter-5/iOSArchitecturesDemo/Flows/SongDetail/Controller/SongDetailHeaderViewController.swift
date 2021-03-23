@@ -33,8 +33,15 @@ class SongDetailHeaderViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        songDetailHeaderView.playButton.addTarget(self, action: #selector(buttonClicked), for: .touchUpInside)
 
         fillData()
+    }
+    
+    @objc func buttonClicked() {
+        let playbackSongDetailViewController = PlaybackSongDetailViewController()
+        navigationController?.pushViewController(playbackSongDetailViewController, animated: true)
     }
     
     private func fillData() {

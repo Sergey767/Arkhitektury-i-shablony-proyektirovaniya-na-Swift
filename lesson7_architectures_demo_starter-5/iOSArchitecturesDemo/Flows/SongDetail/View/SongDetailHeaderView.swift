@@ -8,8 +8,10 @@
 
 import UIKit
 
-class SongDetailHeaderView: UIView {
+class SongDetailHeaderView: UIView, UIViewControllerTransitioningDelegate {
     
+    weak var viewController: UIViewController?
+
     private(set) lazy var imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -50,7 +52,6 @@ class SongDetailHeaderView: UIView {
         button.backgroundColor = UIColor(white: 0.9, alpha: 1.0)
         button.layer.cornerRadius = 16.0
         button.layer.masksToBounds = true
-        
         return button
     }()
     
@@ -63,8 +64,7 @@ class SongDetailHeaderView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
+      
     private func setUI() {
         self.addSubview(imageView)
         self.addSubview(titleLabel)

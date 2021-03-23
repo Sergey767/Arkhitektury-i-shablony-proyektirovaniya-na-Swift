@@ -10,9 +10,12 @@ import UIKit
 
 class SearchSongBuilder {
     static func build() -> (UIViewController & SearchSongViewInput) {
-        let presenter = SearchSongPresenter()
+        let interactor = SearchInteractor()
+        let router = SearchRouter()
+        let presenter = SearchSongPresenter(interactor: interactor, router: router)
         let viewController = SearchSongsViewController(presenter: presenter)
         presenter.viewSongInput = viewController
+        router.viewController = viewController
         
         return viewController
     }
